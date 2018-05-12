@@ -1,3 +1,4 @@
+
 class Enigma
 
   def initialize
@@ -8,16 +9,17 @@ class Enigma
      date = time.strftime("%m%e%y")
   end
 
-  def get_offsets(date = format_date)
+  def get_offsets(date)
     digits_arr = (date.to_i ** 2 %10_000).to_s.split("")
     digits_arr.map { |num| num.to_i }
   end
 
   def get_key
-    ("1" .. "5").to_a.shuffle
+    ("1" .. "5").to_a.shuffle.join
   end
 
-  def get_rotations(key = get_key)
+  def get_rotations(key)
+    key = key.split("")
     rotations = []
     rotations << (key[0] + key[1]).to_i
     rotations << (key[1] + key[2]).to_i
@@ -25,7 +27,7 @@ class Enigma
     rotations << (key[3] + key[4]).to_i
   end
 
-  def total_rotation(offsets = get_offsets, rotations = get_rotations)
+  def total_rotation(offsets, rotations)
     total_rotation = []
     rotation_letters = ["A", "B", "C", "D"]
     total_rotation << offsets[0] + rotations[0]
@@ -41,6 +43,29 @@ class Enigma
     keys.zip(values).to_h
   end
 
-  # def encryptor(message, key = get_key, date = )
-  # end
+  def encryptor(message, key, date)
+    rotations = get_rotations(key)
+    offsets = get_offsets(date)
+    abcd_rotations = total_rotation(offsets, rotations)
+
+    message_arr = message.split("")
+    encrypted_arr = []
+
+    message_arr.each_with_index do |char, index|
+      if index % 4 == 0
+        cipher = new_cipher(abcd_rotations["A"])
+        encrypted_arr << cipher[char]
+      elsif index % 4 == 1
+        cipher = new_cipher(abcd_rotations["B"])
+        encrypted_arr << cipher[char]
+      elsif index % 4 == 2
+        cipher = new_cipher(abcd_rotations["C"])
+        encrypted_arr << cipher[char]
+      elsif index % 4 == 3
+        cipher = new_cipher(abcd_rotations["D"])
+        encrypted_arr << cipher[char]
+      end
+    end
+    encrypted_arr.join
+  end
 end
