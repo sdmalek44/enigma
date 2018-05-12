@@ -1,6 +1,8 @@
 
 class Enigma
 
+  attr_reader :characters
+
   def initialize
     @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
   end
@@ -43,7 +45,7 @@ class Enigma
     keys.zip(values).to_h
   end
 
-  def encryptor(message, key, date)
+  def encryptor(message, key = get_key, date = format_date, switch = 1)
     rotations = get_rotations(key)
     offsets = get_offsets(date)
     abcd_rotations = total_rotation(offsets, rotations)
@@ -53,46 +55,24 @@ class Enigma
 
     message_arr.each_with_index do |char, index|
       if index % 4 == 0
-        cipher = new_cipher(abcd_rotations["A"])
+        cipher = new_cipher(abcd_rotations["A"]*switch)
         encrypted_arr << cipher[char]
       elsif index % 4 == 1
-        cipher = new_cipher(abcd_rotations["B"])
+        cipher = new_cipher(abcd_rotations["B"]*switch)
         encrypted_arr << cipher[char]
       elsif index % 4 == 2
-        cipher = new_cipher(abcd_rotations["C"])
+        cipher = new_cipher(abcd_rotations["C"]*switch)
         encrypted_arr << cipher[char]
       elsif index % 4 == 3
-        cipher = new_cipher(abcd_rotations["D"])
+        cipher = new_cipher(abcd_rotations["D"]*switch)
         encrypted_arr << cipher[char]
       end
     end
     encrypted_arr.join
   end
 
-  def decryptor(encrypted, key, date)
-    rotations = get_rotations(key)
-    offsets = get_offsets(date)
-    abcd_rotations = total_rotation(offsets, rotations)
-
-    encrypted_arr = encrypted.split("")
-    decrypted_arr = []
-
-    encrypted_arr.each_with_index do |char, index|
-      if index % 4 == 0
-        cipher = new_cipher(-abcd_rotations["A"])
-        decrypted_arr << cipher[char]
-      elsif index % 4 == 1
-        cipher = new_cipher(-abcd_rotations["B"])
-        decrypted_arr << cipher[char]
-      elsif index % 4 == 2
-        cipher = new_cipher(-abcd_rotations["C"])
-        decrypted_arr << cipher[char]
-      elsif index % 4 == 3
-        cipher = new_cipher(-abcd_rotations["D"])
-        decrypted_arr << cipher[char]
-      end
-    end
-    decrypted_arr.join
+  def decryptor(encrypted, key, date, switch = -1)
+    encryptor(encrypted, key, date, switch)
   end
 
 end
