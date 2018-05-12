@@ -31,7 +31,7 @@ class Enigma
     Hash[rotation_letters.zip(total_rotation)]
   end
 
-  def cipher(rotation)
+  def new_cipher(rotation)
     keys = @characters
     values = keys.rotate(rotation)
     keys.zip(values).to_h

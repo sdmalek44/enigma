@@ -49,10 +49,10 @@ class EnigmaTest < Minitest::Test
     assert_equal expected, actual
   end
 
-  def test_cipher
+  def test_new_cipher
     enigma = Enigma.new
     all_rotations = {"A" =>3, "B" => 2, "C" => 1, "D" => 4}
-    cipher = enigma.cipher(all_rotations["A"])
+    cipher = enigma.new_cipher(all_rotations["A"])
 
     expected = "d"
     actual = cipher["a"]
