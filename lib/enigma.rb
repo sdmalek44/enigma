@@ -4,8 +4,12 @@ class Enigma
     @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
   end
 
-  def get_offsets(time = Time.new.strftime("%m%e%y"))
-    digits_arr = (time.to_i ** 2 %10_000).to_s.split("")
+  def format_date(time = Time.new)
+     date = time.strftime("%m%e%y")
+  end
+
+  def get_offsets(date = format_date)
+    digits_arr = (date.to_i ** 2 %10_000).to_s.split("")
     digits_arr.map { |num| num.to_i }
   end
 
@@ -36,4 +40,7 @@ class Enigma
     values = keys.rotate(rotation)
     keys.zip(values).to_h
   end
+
+  # def encryptor(message, key = get_key, date = )
+  # end
 end
