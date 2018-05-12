@@ -39,8 +39,14 @@ class EnigmaTest < Minitest::Test
   end
 
   def test_total_rotations
-    skip
+    enigma = Enigma.new
+    offsets = [9, 2, 2, 4]
+    rotations = [41, 12, 23, 35]
 
+    actual = enigma.total_rotation(offsets, rotations)
+    expected = {"A" =>50, "B" => 14, "C" => 25, "D" => 39}
+
+    assert_equal expected, actual
   end
 
   def test_cipher
@@ -50,7 +56,7 @@ class EnigmaTest < Minitest::Test
 
     expected = "d"
     actual = cipher["a"]
-    
+
     assert_equal expected, actual
   end
 end
