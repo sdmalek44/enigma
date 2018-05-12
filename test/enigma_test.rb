@@ -75,4 +75,13 @@ class EnigmaTest < Minitest::Test
 
     assert_equal expected, actual
   end
+
+  def test_decryptor
+    enigma = Enigma.new
+
+    expected = "hello world."
+    actual = enigma.decryptor("w6iv3zty6aai", "12345", "051218")
+
+    assert_equal expected, actual
+  end
 end

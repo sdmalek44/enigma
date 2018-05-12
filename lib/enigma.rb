@@ -68,4 +68,31 @@ class Enigma
     end
     encrypted_arr.join
   end
+
+  def decryptor(encrypted, key, date)
+    rotations = get_rotations(key)
+    offsets = get_offsets(date)
+    abcd_rotations = total_rotation(offsets, rotations)
+
+    encrypted_arr = encrypted.split("")
+    decrypted_arr = []
+
+    encrypted_arr.each_with_index do |char, index|
+      if index % 4 == 0
+        cipher = new_cipher(-abcd_rotations["A"])
+        decrypted_arr << cipher[char]
+      elsif index % 4 == 1
+        cipher = new_cipher(-abcd_rotations["B"])
+        decrypted_arr << cipher[char]
+      elsif index % 4 == 2
+        cipher = new_cipher(-abcd_rotations["C"])
+        decrypted_arr << cipher[char]
+      elsif index % 4 == 3
+        cipher = new_cipher(-abcd_rotations["D"])
+        decrypted_arr << cipher[char]
+      end
+    end
+    decrypted_arr.join
+  end
+
 end
