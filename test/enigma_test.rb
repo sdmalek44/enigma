@@ -2,7 +2,6 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/enigma'
 
-
 class EnigmaTest < Minitest::Test
 
   def test_it_exists
@@ -19,20 +18,23 @@ class EnigmaTest < Minitest::Test
     assert_equal 1, enigma.get_key.count("3")
     assert_equal 1, enigma.get_key.count("4")
     assert_equal 1, enigma.get_key.count("5")
+    assert_equal Array, enigma.get_key.class
   end
 
   def test_it_returns_offset_digits
     enigma = Enigma.new
+    expected = [9, 9, 2, 4]
+    actual = enigma.get_offsets("051118")
 
-    assert_equal 4, enigma.offset_digits.length
-    assert_equal Integer, enigma.offset_digits.sample.class
-    assert_equal Array, enigma.offset_digits.class
+    assert_equal expected, actual
   end
 
   def test_it_gets_rotations
     enigma = Enigma.new
-    assert_equal 4, enigma.get_rotations.length
-    assert_equal Integer, enigma.get_rotations.sample.class
-    assert_equal Array, enigma.get_rotations.class
+
+    expected = [12, 23, 34, 45]
+    actual = enigma.get_rotations(["1", "2", "3", "4", "5"])
+
+    assert_equal expected, actual
   end
 end
