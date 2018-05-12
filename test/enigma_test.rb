@@ -10,6 +10,13 @@ class EnigmaTest < Minitest::Test
     assert_instance_of Enigma, enigma
   end
 
+  def test_format_date
+    enigma = Enigma.new
+
+    assert_equal String, enigma.format_date.class
+    assert_equal 6, enigma.format_date.length
+  end
+
   def test_new_key
     enigma = Enigma.new
 
@@ -18,10 +25,10 @@ class EnigmaTest < Minitest::Test
     assert_equal 1, enigma.get_key.count("3")
     assert_equal 1, enigma.get_key.count("4")
     assert_equal 1, enigma.get_key.count("5")
-    assert_equal Array, enigma.get_key.class
+    assert_equal String, enigma.get_key.class
   end
 
-  def test_it_returns_offset_digits
+  def test_get_offsets
     enigma = Enigma.new
     expected = [9, 9, 2, 4]
     actual = enigma.get_offsets("051118")
@@ -33,7 +40,7 @@ class EnigmaTest < Minitest::Test
     enigma = Enigma.new
 
     expected = [12, 23, 34, 45]
-    actual = enigma.get_rotations(["1", "2", "3", "4", "5"])
+    actual = enigma.get_rotations("12345")
 
     assert_equal expected, actual
   end
@@ -56,6 +63,24 @@ class EnigmaTest < Minitest::Test
 
     expected = "d"
     actual = cipher["a"]
+
+    assert_equal expected, actual
+  end
+
+  def test_encryptor
+    enigma = Enigma.new
+
+    expected = "w6iv3zty6aai"
+    actual = enigma.encryptor("hello world.", "12345", "051218")
+
+    assert_equal expected, actual
+  end
+
+  def test_decryptor
+    enigma = Enigma.new
+
+    expected = "hello world."
+    actual = enigma.decryptor("w6iv3zty6aai", "12345", "051218")
 
     assert_equal expected, actual
   end
