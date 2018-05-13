@@ -1,7 +1,7 @@
 class OffsetCalculator
 
   def format_date(time = Time.new)
-     date = time.strftime("%m%e%y")
+     date = time.strftime("%d%m%y")
   end
 
   def get_offsets(date = format_date)

@@ -62,8 +62,8 @@ class EnigmaTest < Minitest::Test
   def test_it_cracks
     enigma = Enigma.new("12345", [9, 2, 2, 4])
 
-    actual = enigma.crack("this is so secret ..end..")
-    expected = "this is so secret ..end.."
+    actual = enigma.crack("b6f2s7phvwjoae qzw8iz,ait")
+    expected = "this is a message ..end.."
 
     assert_equal expected, actual
   end
