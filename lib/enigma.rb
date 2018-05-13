@@ -59,31 +59,19 @@ class Enigma
   end
 
   def crack(message)
-    message_arr = message.split("").reverse
     reversed_last_4 = message.split("").pop(4).reverse
     assumed_4 = [".",".","d","n"]
     rotations = []
 
     reversed_last_4.each_index do |idx|
-      rotations << @characters.index(reversed_last_4[idx]) - @characters.index(assumed_4[idx])
+      rotations << @characters.index(assumed_4[idx]) - @characters.index(reversed_last_4[idx])
     end
-    
-      reversed_decrypted_arr = []
-      message_arr.each_with_index do |char, index|
-        if index % 4 == 0
-          cipher = new_cipher(rotations[0])
-          reversed_decrypted_arr << cipher[char]
-        elsif index % 4 == 1
-          cipher = new_cipher(rotations[1])
-          reversed_decrypted_arr << cipher[char]
-        elsif index % 4 == 2
-          cipher = new_cipher(rotations[2])
-          reversed_decrypted_arr << cipher[char]
-        elsif index % 4 == 3
-          cipher = new_cipher(rotations[3])
-          reversed_decrypted_arr << cipher[char]
-        end
-      end
-    reversed_decrypted_arr.reverse.join
+
+    abcd_rotations = total_rotation(0, rotations)
+
+    reversed_decrypted_message = encryptor(message.reverse, 1, abcd_rotations)
+
+    reversed_decrypted_message.reverse
+
   end
 end
