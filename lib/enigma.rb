@@ -1,4 +1,3 @@
-
 class Enigma
 
   attr_reader :characters
@@ -14,10 +13,6 @@ class Enigma
   def get_offsets(date)
     digits_arr = (date.to_i ** 2 %10_000).to_s.split("")
     digits_arr.map { |num| num.to_i }
-  end
-
-  def get_key
-    ("1" .. "5").to_a.shuffle.join
   end
 
   def get_rotations(key)
@@ -45,7 +40,7 @@ class Enigma
     keys.zip(values).to_h
   end
 
-  def encryptor(message, key = get_key, date = format_date, switch = 1)
+  def encryptor(message, key, date = format_date, switch = 1)
     rotations = get_rotations(key)
     offsets = get_offsets(date)
     abcd_rotations = total_rotation(offsets, rotations)
@@ -75,4 +70,9 @@ class Enigma
     encryptor(encrypted, key, date, switch)
   end
 
+  def crack(message, date)
+    last_6 = message.split("").reverse.shift(6).reverse
+    assumed_6 = [".",".","e","n","d",".","."]
+
+  end
 end
