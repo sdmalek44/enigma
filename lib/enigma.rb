@@ -6,15 +6,6 @@ class Enigma
     @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
   end
 
-  def format_date(time = Time.new)
-     date = time.strftime("%m%e%y")
-  end
-
-  def get_offsets(date)
-    digits_arr = (date.to_i ** 2 %10_000).to_s.split("")
-    digits_arr.map { |num| num.to_i }
-  end
-
   def get_rotations(key)
     key = key.split("")
     rotations = []

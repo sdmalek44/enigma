@@ -10,21 +10,6 @@ class EnigmaTest < Minitest::Test
     assert_instance_of Enigma, enigma
   end
 
-  def test_format_date
-    enigma = Enigma.new
-
-    assert_equal String, enigma.format_date.class
-    assert_equal 6, enigma.format_date.length
-  end
-
-  def test_get_offsets
-    enigma = Enigma.new
-    expected = [9, 9, 2, 4]
-    actual = enigma.get_offsets("051118")
-
-    assert_equal expected, actual
-  end
-
   def test_it_gets_rotations
     enigma = Enigma.new
 
