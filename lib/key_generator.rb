@@ -4,7 +4,7 @@ class KeyGenerator
     @numbers = numbers
   end
 
-  def get_key(key = @numbers.sample(5))
-    key.join
+  def get_key
+    key = @numbers.sample(5).join
   end
 end

@@ -12,9 +12,8 @@ class KeyGeneratorTest < Minitest::Test
 
   def test_get_key
     keygen = KeyGenerator.new
-    expected = "12345"
-    actual = keygen.get_key(["1", "2", "3", "4", "5"])
 
-    assert_equal expected, actual
+    assert_equal 5, keygen.get_key.length
+    assert_equal String, keygen.get_key.class 
   end
 end

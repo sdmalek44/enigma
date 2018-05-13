@@ -2,20 +2,13 @@ class Enigma
 
   attr_reader :characters
 
-  def initialize
+  def initialize(key, offsets)
     @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
+    @key = key
+    @offsets = offsets
   end
 
-  def format_date(time = Time.new)
-     date = time.strftime("%m%e%y")
-  end
-
-  def get_offsets(date)
-    digits_arr = (date.to_i ** 2 %10_000).to_s.split("")
-    digits_arr.map { |num| num.to_i }
-  end
-
-  def get_rotations(key)
+  def get_rotations(key = @key)
     key = key.split("")
     rotations = []
     rotations << (key[0] + key[1]).to_i
@@ -24,7 +17,7 @@ class Enigma
     rotations << (key[3] + key[4]).to_i
   end
 
-  def total_rotation(offsets, rotations)
+  def total_rotation(offsets = @offsets, rotations = get_rotations)
     total_rotation = []
     rotation_letters = ["A", "B", "C", "D"]
     total_rotation << offsets[0] + rotations[0]
@@ -35,16 +28,11 @@ class Enigma
   end
 
   def new_cipher(rotation)
-    keys = @characters
-    values = keys.rotate(rotation)
-    keys.zip(values).to_h
+    rotated_characters = @characters.rotate(rotation)
+    @characters.zip(rotated_characters).to_h
   end
 
-  def encryptor(message, key, date = format_date, switch = 1)
-    rotations = get_rotations(key)
-    offsets = get_offsets(date)
-    abcd_rotations = total_rotation(offsets, rotations)
-
+  def encryptor(message, switch = 1, abcd_rotations = total_rotation(@offsets, get_rotations))
     message_arr = message.split("")
     encrypted_arr = []
 
@@ -66,13 +54,36 @@ class Enigma
     encrypted_arr.join
   end
 
-  def decryptor(encrypted, key, date, switch = -1)
-    encryptor(encrypted, key, date, switch)
+  def decryptor(encrypted, switch = -1)
+    encryptor(encrypted, switch)
   end
 
-  def crack(message, date)
-    last_6 = message.split("").reverse.shift(6).reverse
-    assumed_6 = [".",".","e","n","d",".","."]
+  def crack(message)
+    message_arr = message.split("").reverse
+    reversed_last_4 = message.split("").pop(4).reverse
+    assumed_4 = [".",".","d","n"]
+    rotations = []
 
+    reversed_last_4.each_index do |idx|
+      rotations << @characters.index(reversed_last_4[idx]) - @characters.index(assumed_4[idx])
+    end
+    
+      reversed_decrypted_arr = []
+      message_arr.each_with_index do |char, index|
+        if index % 4 == 0
+          cipher = new_cipher(rotations[0])
+          reversed_decrypted_arr << cipher[char]
+        elsif index % 4 == 1
+          cipher = new_cipher(rotations[1])
+          reversed_decrypted_arr << cipher[char]
+        elsif index % 4 == 2
+          cipher = new_cipher(rotations[2])
+          reversed_decrypted_arr << cipher[char]
+        elsif index % 4 == 3
+          cipher = new_cipher(rotations[3])
+          reversed_decrypted_arr << cipher[char]
+        end
+      end
+    reversed_decrypted_arr.reverse.join
   end
 end
