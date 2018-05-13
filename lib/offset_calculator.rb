@@ -4,7 +4,7 @@ class OffsetCalculator
      date = time.strftime("%m%e%y")
   end
 
-  def get_offsets(date)
+  def get_offsets(date = format_date)
     digits_arr = (date.to_i ** 2 %10_000).to_s.split("")
     digits_arr.map { |num| num.to_i }
   end
