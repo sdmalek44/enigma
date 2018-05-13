@@ -2,7 +2,7 @@ class Enigma
 
   attr_reader :characters
 
-  def initialize(key, offsets)
+  def initialize(key = "12345", offsets = [9, 2, 2, 4])
     @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
     @key = key
     @offsets = offsets
@@ -32,7 +32,7 @@ class Enigma
     @characters.zip(rotated_characters).to_h
   end
 
-  def encryptor(message, switch = 1, abcd_rotations = total_rotation(@offsets, get_rotations))
+  def encrypt(message, switch = 1, abcd_rotations = total_rotation(@offsets, get_rotations))
     message_arr = message.split("")
     encrypted_arr = []
 
@@ -55,7 +55,7 @@ class Enigma
   end
 
   def decryptor(encrypted, switch = -1)
-    encryptor(encrypted, switch)
+    encrypt(encrypted, switch)
   end
 
   def crack(message)
@@ -69,9 +69,18 @@ class Enigma
 
     abcd_rotations = total_rotation(0, rotations)
 
-    reversed_decrypted_message = encryptor(message.reverse, 1, abcd_rotations)
+    reversed_decrypted_message = encrypt(message.reverse, 1, abcd_rotations)
 
     reversed_decrypted_message.reverse
+  end
 
+  def encrypt_file(filename, output_filename)
+    input_file = File.open(filename, 'r')
+    text = input_file.read.strip
+    encrypted = encrypt(text)
+    output_file = File.open(output_filename, 'w')
+    output_file.write(encrypted)
+    input_file.close
+    output_file.close
   end
 end
