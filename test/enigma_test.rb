@@ -17,17 +17,6 @@ class EnigmaTest < Minitest::Test
     assert_equal 6, enigma.format_date.length
   end
 
-  def test_new_key
-    enigma = Enigma.new
-
-    assert_equal 1, enigma.get_key.count("1")
-    assert_equal 1, enigma.get_key.count("2")
-    assert_equal 1, enigma.get_key.count("3")
-    assert_equal 1, enigma.get_key.count("4")
-    assert_equal 1, enigma.get_key.count("5")
-    assert_equal String, enigma.get_key.class
-  end
-
   def test_get_offsets
     enigma = Enigma.new
     expected = [9, 9, 2, 4]
