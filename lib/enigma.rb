@@ -83,4 +83,14 @@ class Enigma
     input_file.close
     output_file.close
   end
+
+  def decrypt_file(file_name, new_filename)
+    input_file = File.open(file_name, 'r')
+    text = input_file.read.strip
+    decrypted = decrypt(text)
+    output_file = File.open(new_filename, 'w')
+    output_file.write(decrypted)
+    input_file.close
+    output_file.close
+  end
 end
