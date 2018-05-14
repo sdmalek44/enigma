@@ -67,4 +67,15 @@ class EnigmaTest < Minitest::Test
 
     assert_equal expected, actual
   end
+
+  def test_detects_correct_key
+    enigma = Enigma.new("12345", [9, 2, 2, 4])
+    total_rotations = [53, 25, 34, 18]
+    offsets = [1, 2, 3, 4]
+
+    actual = enigma.detect_key(total_rotations, offsets)
+    expected = "52314"
+
+    assert_equal expected, actual
+  end
 end

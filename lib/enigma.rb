@@ -1,6 +1,7 @@
 class Enigma
 
-  attr_reader :characters
+  attr_reader :characters,
+              :total
 
   def initialize(key = "12345", offsets = [9, 2, 2, 4])
     @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
@@ -61,36 +62,40 @@ class Enigma
   def crack(message)
     reversed_last_4 = message.split("").pop(4).reverse
     assumed_4 = [".",".","d","n"]
-    rotations = []
+    backward_rotations = []
 
     reversed_last_4.each_index do |idx|
-      rotations << @characters.index(assumed_4[idx]) - @characters.index(reversed_last_4[idx])
+      backward_rotations << @characters.index(assumed_4[idx]) - @characters.index(reversed_last_4[idx])
     end
 
-    abcd_rotations = total_rotation(0, rotations)
+    backward_rotations.map! do |rot|
+      if rot < 0
+        39 + rot
+      else
+        rot
+      end
+    end
 
-    reversed_decrypted_message = encrypt(message.reverse, 1, abcd_rotations)
+    arrange = -(4 - (message.length % 4))
+    forward_rotations = backward_rotations.rotate(arrange)
+    forward_rotations = forward_rotations.reverse
+    @total = forward_rotations
 
-    reversed_decrypted_message.reverse
+    abcd_rotations = total_rotation(0, forward_rotations)
+
+    decrypted_message = encrypt(message, 1, abcd_rotations)
   end
 
-  def encrypt_file(filename, output_filename)
-    input_file = File.open(filename, 'r')
-    text = input_file.read.strip
-    encrypted = encrypt(text)
-    output_file = File.open(output_filename, 'w')
-    output_file.write(encrypted)
-    input_file.close
-    output_file.close
+  def detect_key(total_rotations, offsets)
+    rotations = []
+    total_rotations.each_index do |idx|
+      if idx == 0
+        rotations << (total_rotations[idx] - offsets[idx]).to_s
+      else
+        rotations << ((total_rotations[idx] - offsets[idx])%10).to_s
+    end
   end
 
-  def decrypt_file(file_name, new_filename)
-    input_file = File.open(file_name, 'r')
-    text = input_file.read.strip
-    decrypted = decrypt(text)
-    output_file = File.open(new_filename, 'w')
-    output_file.write(decrypted)
-    input_file.close
-    output_file.close
+    rotations.join
   end
 end
