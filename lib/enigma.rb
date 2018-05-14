@@ -54,7 +54,7 @@ class Enigma
     encrypted_arr.join
   end
 
-  def decryptor(encrypted, switch = -1)
+  def decrypt(encrypted, switch = -1)
     encrypt(encrypted, switch)
   end
 

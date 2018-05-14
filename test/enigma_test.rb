@@ -19,7 +19,7 @@ class EnigmaTest < Minitest::Test
     assert_equal expected, actual
   end
 
-  def test_total_rotation
+  def test_it_returns_hash_of_rotations_plus_offsets
     enigma = Enigma.new("key", "offsets")
     offsets = [9, 2, 2, 4]
     rotations = [41, 12, 23, 35]
@@ -30,7 +30,7 @@ class EnigmaTest < Minitest::Test
     assert_equal expected, actual
   end
 
-  def test_new_cipher
+  def test_new_cipher_rotates_by_correct_rotation
     enigma = Enigma.new("key", "offsets")
     all_rotations = {"A" =>3, "B" => 2, "C" => 1, "D" => 4}
     cipher = enigma.new_cipher(all_rotations["A"])
@@ -41,20 +41,20 @@ class EnigmaTest < Minitest::Test
     assert_equal expected, actual
   end
 
-  def test_encryptor
+  def test_encrypt
     enigma = Enigma.new("12345", [9, 2, 2, 4])
 
     expected = "23iv9wty, ai"
-    actual = enigma.encryptor("hello world.")
+    actual = enigma.encrypt("hello world.")
 
     assert_equal expected, actual
   end
 
-  def test_decryptor
+  def test_decrypt_encrypts_by_negative_rotation
     enigma = Enigma.new("12345", [9, 2, 2, 4])
 
     expected = "hello world."
-    actual = enigma.decryptor("23iv9wty, ai")
+    actual = enigma.decrypt("23iv9wty, ai")
 
     assert_equal expected, actual
   end
