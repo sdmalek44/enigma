@@ -64,12 +64,11 @@ class EnigmaTest < Minitest::Test
   end
 
   def test_detects_correct_key
-    skip
     enigma = Enigma.new
-    total_rotations = [53, 25, 34, 18]
-    offsets = [1, 2, 3, 4]
+    message = "hello ..end.."
+    date = "150518"
 
-    actual = enigma.detect_key(total_rotations, offsets)
+    actual = enigma.detect_key(message, date)
     expected = "52314"
 
     assert_equal expected, actual

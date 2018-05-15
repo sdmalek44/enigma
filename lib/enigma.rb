@@ -67,7 +67,7 @@ class Enigma
 
   def base_rotations(message)
 
-   last_4 = message[-4..-1].split("")
+   last_4 = message[-4..-1].chars
    assumed_4 = ["n","d",".","."]
    end_rotations = []
 
@@ -85,19 +85,36 @@ class Enigma
 
    base_rotations = base_rotations(message)
 
-    decrypted_message = encrypt(message, 0, base_rotations)
+  decrypted_message = encrypt(message, 0, base_rotations)
   end
 
-  def detect_key(total_rotations, offsets)
+  def derive_rotations(base_rotations, offsets)
     rotations = []
-    total_rotations.each_index do |idx|
-      if idx == 0
-        rotations << (total_rotations[idx] - offsets[idx]).to_s
+    base_rotations.each_with_index do |base_rotation, idx|
+      if base_rotation - offsets[idx] < 0
+        rotations << (base_rotation - offsets[idx] + @characters.length)
       else
-        rotations << ((total_rotations[idx] - offsets[idx])%10).to_s
+        rotations << (base_rotation - offsets[idx])
+      end
     end
+    rotations
   end
 
-    rotations.join
+  def detect_key(message, date)
+    base_rotations = base_rotations(message)
+    offsets = OffsetCalculator.new.get_offsets(date)
+
+    actual_rotations = derive_rotations(base_rotations, offsets)
+
+    key_parts = []
+    actual_rotations.each_with_index do |rot, idx|
+      if idx == 0
+        key_parts << rot.to_s.rjust(1, "0")
+      else
+        double_digit = rot.to_s.rjust(1, "0")
+        key_parts << double_digit[1]
+      end
+    end
+    key_parts.join
   end
 end
