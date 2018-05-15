@@ -66,28 +66,29 @@ class Enigma
   end
 
   def base_rotations(message)
-    last_4 = message[-4..-1].split("")
-    assumed_4 = ["n","d",".","."]
-    end_rotations = []
+    
+   last_4 = message[-4..-1].split("")
+   assumed_4 = ["n","d",".","."]
+   end_rotations = []
 
-    last_4.each_index do |idx|
-      end_rotations << @characters.index(assumed_4[idx]) - @characters.index(last_4[idx])
-    end
+   last_4.each_index do |idx|
+     end_rotations << @characters.index(assumed_4[idx]) - @characters.index(last_4[idx])
+   end
 
-    left_over = message.length % 4
-    shift_end_rotations = 4 - left_over
+   left_over = message.length % 4
+   shift_end_rotations = 4 - left_over
 
-    start_rotations = end_rotations.rotate(shift_end_rotations)
-  end
+   start_rotations = end_rotations.rotate(shift_end_rotations)
+ end
 
-  def crack(message)
+ def crack(message)
 
-    base_rotations = base_rotations(message)
+   base_rotations = base_rotations(message)
 
-    abcd_rotations = total_rotation(0, base_rotations)
+   abcd_rotations = total_rotation(0, base_rotations)
 
-    decrypted_message = encrypt(message, 1, abcd_rotations)
-  end
+   decrypted_message = encrypt(message, 1, abcd_rotations)
+ end
 
   def detect_key(total_rotations, offsets)
     rotations = []
