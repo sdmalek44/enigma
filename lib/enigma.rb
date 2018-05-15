@@ -66,7 +66,7 @@ class Enigma
   end
 
   def base_rotations(message)
-    
+
    last_4 = message[-4..-1].split("")
    assumed_4 = ["n","d",".","."]
    end_rotations = []
@@ -85,10 +85,8 @@ class Enigma
 
    base_rotations = base_rotations(message)
 
-   abcd_rotations = total_rotation(0, base_rotations)
-
-   decrypted_message = encrypt(message, 1, abcd_rotations)
- end
+    decrypted_message = encrypt(message, 0, base_rotations)
+  end
 
   def detect_key(total_rotations, offsets)
     rotations = []
