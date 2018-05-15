@@ -55,7 +55,6 @@ class EnigmaTest < Minitest::Test
   end
 
   def test_it_cracks
-    skip
     enigma = Enigma.new
 
     actual = enigma.crack("b6f2s7phvwjoae qzw8iz,ait")
