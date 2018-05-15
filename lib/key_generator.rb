@@ -1,10 +1,21 @@
 class KeyGenerator
 
-  def initialize(numbers = %w[1 2 3 4 5])
-    @numbers = numbers
+  attr_reader :key
+
+  def initialize(key = "12345")
+   @key = key
   end
 
-  def get_key
-    key = @numbers.sample(5).join
+  def random_key
+    rand(00000..99999).to_s.rjust(5, "0")
+  end
+
+  def get_rotations(key)
+    key = key.chars
+    rotations = []
+    rotations << (key[0] + key[1]).to_i
+    rotations << (key[1] + key[2]).to_i
+    rotations << (key[2] + key[3]).to_i
+    rotations << (key[3] + key[4]).to_i
   end
 end

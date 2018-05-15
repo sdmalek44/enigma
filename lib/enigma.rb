@@ -1,24 +1,24 @@
+require './lib/key_generator.rb'
+require './lib/offset_calculator.rb'
+
 class Enigma
 
-  attr_reader :characters,
-              :total
+  attr_reader :characters
 
-  def initialize(key = "12345", offsets = [9, 2, 2, 4])
+  def initialize
     @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
-    @key = key
-    @offsets = offsets
   end
 
-  def get_rotations(key = @key)
-    key = key.split("")
-    rotations = []
-    rotations << (key[0] + key[1]).to_i
-    rotations << (key[1] + key[2]).to_i
-    rotations << (key[2] + key[3]).to_i
-    rotations << (key[3] + key[4]).to_i
+  def new_offsets
+    OffsetCalculator.new.get_offsets
   end
 
-  def total_rotation(offsets = @offsets, rotations = get_rotations)
+  def new_rotations
+    new_key = KeyGenerator.new
+    new_key.get_rotations(new_key.random_key)
+  end
+
+  def total_rotation(offsets, rotations)
     total_rotation = []
     rotation_letters = ["A", "B", "C", "D"]
     total_rotation << offsets[0] + rotations[0]
@@ -33,8 +33,9 @@ class Enigma
     @characters.zip(rotated_characters).to_h
   end
 
-  def encrypt(message, switch = 1, abcd_rotations = total_rotation(@offsets, get_rotations))
-    message_arr = message.split("")
+  def encrypt(message, offsets = new_offsets, rotations = new_rotations, switch = 1)
+    abcd_rotations = total_rotation(offsets, rotations)
+    message_arr = message.chars
     encrypted_arr = []
 
     message_arr.each_with_index do |char, index|
@@ -55,11 +56,17 @@ class Enigma
     encrypted_arr.join
   end
 
-  def decrypt(encrypted, switch = -1)
-    encrypt(encrypted, switch)
+  def decrypt(encrypted, key, date)
+    assigned_key =  KeyGenerator.new(key)
+    rotations = assigned_key.get_rotations(assigned_key.key)
+
+    offsets = OffsetCalculator.new.get_offsets(date)
+
+    encrypt(encrypted, offsets, rotations, -1)
   end
 
   def base_rotations(message)
+    
    last_4 = message[-4..-1].split("")
    assumed_4 = ["n","d",".","."]
    end_rotations = []
