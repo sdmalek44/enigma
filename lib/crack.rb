@@ -13,10 +13,10 @@ end
 
 message_file, new_filename, date = ARGV
 
-offsets = OffsetCalculator.new.get_offsets(date.to_s)
+e = Enigma.new
 
-enigma = Enigma.new("Unknown key", offsets)
+date = date.to_s
 
-crack_file(message_file, new_filename, enigma)
+crack_file(message_file, new_filename, e)
 
-puts "Created #{new_filename} with the cracked key and date #{date}"
+puts "Created #{new_filename} with the cracked key unknown and date #{date}"

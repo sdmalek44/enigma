@@ -6,7 +6,8 @@ class Enigma
   attr_reader :characters
 
   def initialize
-    @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
+    @characters = (" ".."z").to_a
+    # @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
   end
 
   def new_offsets
@@ -67,37 +68,46 @@ class Enigma
 
   def base_rotations(message)
 
-   last_4 = message[-4..-1].split("")
+   last_4 = message[-4..-1].chars
    assumed_4 = ["n","d",".","."]
    end_rotations = []
 
    last_4.each_index do |idx|
-     end_rotations << @characters.index(assumed_4[idx]) - @characters.index(last_4[idx])
+     new_char = @characters.rotate(@characters.index(assumed_4[idx]))
+   end_rotations << - new_char.index(last_4[idx])
    end
-
    left_over = message.length % 4
-   shift_end_rotations = 4 - left_over
-
-   start_rotations = end_rotations.rotate(shift_end_rotations)
+   base_rotations = end_rotations.rotate(4 - left_over)
  end
 
  def crack(message)
 
-   base_rotations = base_rotations(message)
+  base_rotations = base_rotations(message)
 
-    decrypted_message = encrypt(message, 0, base_rotations)
+  decrypted_message = encrypt(message, 0, base_rotations)
   end
 
-  def detect_key(total_rotations, offsets)
-    rotations = []
-    total_rotations.each_index do |idx|
-      if idx == 0
-        rotations << (total_rotations[idx] - offsets[idx]).to_s
-      else
-        rotations << ((total_rotations[idx] - offsets[idx])%10).to_s
+  def actual_rotations(base_rotations, offsets)
+    real_rotations = []
+    base_rotations.each_with_index do |base, index|
+      real_rotations << (base + offsets[index]).abs
     end
+    real_rotations
   end
 
-    rotations.join
+  def detect_key(message, date)
+    base_rotations = base_rotations(message)
+    offsets = OffsetCalculator.new.get_offsets(date)
+    actual_rotations = actual_rotations(base_rotations, offsets)
+
+    key_parts = []
+    actual_rotations.each_with_index do |rot, idx|
+      if idx == 0
+        key_parts << rot.to_s.rjust(1, "0")
+      else
+        key_parts << rot.to_s[-1]
+      end
+    end
+    key_parts.join
   end
 end
