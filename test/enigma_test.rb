@@ -64,6 +64,7 @@ class EnigmaTest < Minitest::Test
   end
 
   def test_detects_correct_key
+    skip
     enigma = Enigma.new
     message = "hello ..end.."
     date = "150518"

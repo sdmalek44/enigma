@@ -83,7 +83,7 @@ class Enigma
 
  def crack(message)
 
-   base_rotations = base_rotations(message)
+  base_rotations = base_rotations(message)
 
   decrypted_message = encrypt(message, 0, base_rotations)
   end
