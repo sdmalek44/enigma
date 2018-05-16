@@ -76,38 +76,13 @@ class Enigma
       encrypt(encrypted, key, date, -1)
   end
 
-  def base_rotations(message)
-   last_4 = message[-4..-1].chars
-   assumed_4 = ["n","d",".","."]
-   end_rotations = []
-
-   last_4.each_index do |idx|
-     new_char = @characters.rotate(@characters.index(assumed_4[idx]))
-   end_rotations << - new_char.index(last_4[idx])
-   end
-   shift_base_rotations(message, end_rotations)
-  end
-
-  def shift_base_rotations(message, end_rotations)
-   left_over = message.length % 4
-   base_rotations = end_rotations.rotate(4 - left_over)
-  end
-
   def crack(message, date = Date.today)
     if date.class == Date
     date = format_date(date)
-  end
+   end
 
   key = detect_key(message, date)
   decrypted_message = decrypt(message, key, date)
-  end
-
-  def actual_rotations(base_rotations, offsets)
-    real_rotations = []
-    base_rotations.each_with_index do |base, index|
-      real_rotations << (base + offsets[index]).abs
-    end
-    real_rotations
   end
 
   def detect_key(message, date)
@@ -124,5 +99,30 @@ class Enigma
       end
     end
     key_parts.join
+  end
+
+  def base_rotations(message)
+   last_4 = message[-4..-1].chars
+   assumed_4 = ["n","d",".","."]
+   end_rotations = []
+
+   last_4.each_index do |idx|
+     new_char = @characters.rotate(@characters.index(assumed_4[idx]))
+   end_rotations << new_char.index(last_4[idx])
+   end
+   shift_base_rotations(message, end_rotations)
+  end
+
+  def shift_base_rotations(message, end_rotations)
+   left_over = message.length % 4
+   base_rotations = end_rotations.rotate(4 - left_over)
+  end
+
+  def actual_rotations(base_rotations, offsets)
+    real_rotations = []
+    base_rotations.each_with_index do |base, index|
+      real_rotations << base - offsets[index]
+    end
+    real_rotations
   end
 end

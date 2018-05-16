@@ -102,10 +102,31 @@ class EnigmaTest < Minitest::Test
     assert_equal expected, actual
   end
 
+
+  def test_it_cracks
+
+    enigma = Enigma.new
+
+    actual = enigma.crack("\\$5B(FD-(15:4HR;'#R_", "160518")
+    expected = "Hello, World ..end.."
+
+    assert_equal expected, actual
+  end
+
+  def test_it_detects_correct_key
+    enigma = Enigma.new
+
+    message = "\\$5B(FD-(15:4HR;'#R_"
+    date = "160518"
+    expected = "12345"
+
+    assert_equal expected, enigma.detect_key(message, date)
+  end
+
   def test_base_rotations
     enigma = Enigma.new
 
-    expected = [-6, -16, -70, -70]
+    expected = [6, 16, 70, 70]
 
     assert_equal expected, enigma.base_rotations("tttt")
   end
@@ -118,12 +139,15 @@ class EnigmaTest < Minitest::Test
     assert_equal expected, enigma.shift_base_rotations("ttttt", [1, 2, 3, 4])
   end
 
-  def test_it_cracks
-    
+
+  def test_actual_rotations_is_base_rotations_minus_offset
     enigma = Enigma.new
 
-    actual = enigma.crack("\\$5B(FD-(15:4HR;'#R_", "160518")
-    expected = "Hello, World ..end.."
+    base_rotations = [10, 10, 10, 10]
+    offsets = [1, 2, 3, 4]
+
+    expected = [9, 8 , 7, 6]
+    actual = enigma.actual_rotations(base_rotations, offsets)
 
     assert_equal expected, actual
   end
