@@ -1,5 +1,6 @@
 require './lib/key_generator.rb'
 require './lib/offset_calculator.rb'
+require 'date'
 
 class Enigma
 
@@ -7,16 +8,22 @@ class Enigma
 
   def initialize
     @characters = (" ".."z").to_a
-    # @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
   end
 
-  def new_offsets
-    OffsetCalculator.new.get_offsets
+  def new_offsets(date)
+    OffsetCalculator.new.get_offsets(format_date(date))
   end
 
-  def new_rotations
-    new_key = KeyGenerator.new
-    new_key.get_rotations(new_key.random_key)
+  def format_date(date)
+    date.strftime("%d%m%y")
+  end
+
+  def new_key
+    new_key = KeyGenerator.new.random_key
+  end
+
+  def new_rotations(key)
+    KeyGenerator.new.get_rotations(key)
   end
 
   def total_rotation(offsets, rotations)
@@ -34,7 +41,10 @@ class Enigma
     @characters.zip(rotated_characters).to_h
   end
 
-  def encrypt(message, offsets = new_offsets, rotations = new_rotations, switch = 1)
+  def encrypt(message, key = , date = Date.today, switch = 1)
+
+    rotations = new_rotations
+    offsets = new_offsets(date)
     abcd_rotations = total_rotation(offsets, rotations)
     message_arr = message.chars
     encrypted_arr = []
@@ -57,8 +67,8 @@ class Enigma
     encrypted_arr.join
   end
 
-  def decrypt(encrypted, key, date)
-    assigned_key =  KeyGenerator.new(key)
+  def decrypt(encrypted, key, date = get_date)
+    assigned_key = KeyGenerator.new(key)
     rotations = assigned_key.get_rotations(assigned_key.key)
 
     offsets = OffsetCalculator.new.get_offsets(date)
@@ -67,7 +77,6 @@ class Enigma
   end
 
   def base_rotations(message)
-
    last_4 = message[-4..-1].chars
    assumed_4 = ["n","d",".","."]
    end_rotations = []
@@ -81,7 +90,6 @@ class Enigma
  end
 
  def crack(message)
-
   base_rotations = base_rotations(message)
 
   decrypted_message = encrypt(message, 0, base_rotations)
