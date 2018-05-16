@@ -6,7 +6,8 @@ class Enigma
   attr_reader :characters
 
   def initialize
-    @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
+    @characters = (" ".."z").to_a
+    # @characters = (("a".."z").to_a << ("0".."9").to_a << [" ", ".", ","]).flatten
   end
 
   def new_offsets
@@ -76,9 +77,7 @@ class Enigma
    end_rotations << - new_char.index(last_4[idx])
    end
    left_over = message.length % 4
-   shift_end_rotations = 4 - left_over
-
-   start_rotations = end_rotations.rotate(shift_end_rotations)
+   base_rotations = end_rotations.rotate(4 - left_over)
  end
 
  def crack(message)
@@ -88,31 +87,25 @@ class Enigma
   decrypted_message = encrypt(message, 0, base_rotations)
   end
 
-  def normalize_rotations(base_rotations)
-    rotations = []
-    normal = base_rotations.map do |base_rotation|
-              if base_rotation > 0
-                base_rotation - @characters.length
-              else
-                base_rotation
-              end
-            end
-    normal
+  def actual_rotations(base_rotations, offsets)
+    real_rotations = []
+    base_rotations.each_with_index do |base, index|
+      real_rotations << (base + offsets[index]).abs
+    end
+    real_rotations
   end
 
   def detect_key(message, date)
     base_rotations = base_rotations(message)
     offsets = OffsetCalculator.new.get_offsets(date)
-
-    normalized = normalize_rotations(base_rotations)
+    actual_rotations = actual_rotations(base_rotations, offsets)
 
     key_parts = []
     actual_rotations.each_with_index do |rot, idx|
       if idx == 0
         key_parts << rot.to_s.rjust(1, "0")
       else
-        double_digit = rot.to_s.rjust(1, "0")
-        key_parts << double_digit[1]
+        key_parts << rot.to_s[-1]
       end
     end
     key_parts.join

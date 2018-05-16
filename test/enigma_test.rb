@@ -35,9 +35,9 @@ class EnigmaTest < Minitest::Test
   def test_encrypt
     enigma = Enigma.new
     offsets = [8,3,2,4]
-    rotations = [35, 55, 57, 70]
+    rotations = [12, 23, 34, 45]
 
-    expected = "lx5hsqdkv4x7"
+    expected = "!$5B(:@E++-_"
     actual = enigma.encrypt("hello world.", offsets, rotations)
 
     assert_equal expected, actual
@@ -45,11 +45,11 @@ class EnigmaTest < Minitest::Test
 
   def test_decrypt_encrypts_by_negative_rotation
     enigma = Enigma.new
-    key = "35570"
+    key = "12345"
     date = "150518"
 
     expected = "hello world."
-    actual = enigma.decrypt("lx5hsqdkv4x7", key, date)
+    actual = enigma.decrypt("!$5B(:@E++-_", key, date)
 
     assert_equal expected, actual
   end
@@ -57,20 +57,19 @@ class EnigmaTest < Minitest::Test
   def test_it_cracks
     enigma = Enigma.new
 
-    actual = enigma.crack("v8kjq0cyqu8rt,qfzy8drylirs")
-    expected = "come get a massage ..end.."
+    actual = enigma.crack("ob%*vc/2ni7*`].wouE@`h @)")
+    expected = "this is so secret ..end.."
 
     assert_equal expected, actual
   end
 
   def test_detects_correct_key
-skip
     enigma = Enigma.new
-    message = "v8kjq0cyqu8rt,qfzy8drylirs"
-    date = "150518"
+    message = "ob%*vc/2ni7*`].wouE@`h @)"
+    date = "160518"
 
     actual = enigma.detect_key(message, date)
-    expected = "11740"
+    expected = "78214"
 
     assert_equal expected, actual
   end
