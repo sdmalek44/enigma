@@ -108,12 +108,9 @@ class Enigma
 
    last_4.each_index do |idx|
      new_char = @characters.rotate(@characters.index(assumed_4[idx]))
-   end_rotations << new_char.index(last_4[idx])
+   end_rotations << - new_char.index(last_4[idx])
    end
-   shift_base_rotations(message, end_rotations)
-  end
 
-  def shift_base_rotations(message, end_rotations)
    left_over = message.length % 4
    base_rotations = end_rotations.rotate(4 - left_over)
   end
@@ -121,7 +118,7 @@ class Enigma
   def actual_rotations(base_rotations, offsets)
     real_rotations = []
     base_rotations.each_with_index do |base, index|
-      real_rotations << base - offsets[index]
+      real_rotations << (base + offsets[index]).abs
     end
     real_rotations
   end
