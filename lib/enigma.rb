@@ -88,23 +88,24 @@ class Enigma
   decrypted_message = encrypt(message, 0, base_rotations)
   end
 
-  def derive_rotations(base_rotations, offsets)
+  def normalize_rotations(base_rotations)
     rotations = []
-    base_rotations.each_with_index do |base_rotation, idx|
-      if base_rotation - offsets[idx] < 0
-        rotations << (base_rotation - offsets[idx] + @characters.length)
-      else
-        rotations << (base_rotation - offsets[idx])
-      end
-    end
-    rotations
+    normal = base_rotations.map do |base_rotation|
+              if base_rotation > 0
+                base_rotation - @characters.length
+              else
+                base_rotation
+              end
+            end
+  require "pry"; binding.pry
+    normal
   end
 
   def detect_key(message, date)
     base_rotations = base_rotations(message)
     offsets = OffsetCalculator.new.get_offsets(date)
 
-    actual_rotations = derive_rotations(base_rotations, offsets)
+    normalized = normalize_rotations(base_rotations)
 
     key_parts = []
     actual_rotations.each_with_index do |rot, idx|

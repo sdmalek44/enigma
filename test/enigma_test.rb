@@ -66,11 +66,11 @@ class EnigmaTest < Minitest::Test
   def test_detects_correct_key
     skip
     enigma = Enigma.new
-    message = "hello ..end.."
+    message = "v8kjq0cyqu8rt,qfzy8drylirs"
     date = "150518"
 
     actual = enigma.detect_key(message, date)
-    expected = "52314"
+    expected = "11740"
 
     assert_equal expected, actual
   end
