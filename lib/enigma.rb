@@ -72,9 +72,9 @@ class Enigma
    end_rotations = []
 
    last_4.each_index do |idx|
-     end_rotations << @characters.index(assumed_4[idx]) - @characters.index(last_4[idx])
+     new_char = @characters.rotate(@characters.index(assumed_4[idx]))
+   end_rotations << - new_char.index(last_4[idx])
    end
-
    left_over = message.length % 4
    shift_end_rotations = 4 - left_over
 
@@ -97,7 +97,6 @@ class Enigma
                 base_rotation
               end
             end
-  require "pry"; binding.pry
     normal
   end
 

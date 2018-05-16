@@ -57,14 +57,14 @@ class EnigmaTest < Minitest::Test
   def test_it_cracks
     enigma = Enigma.new
 
-    actual = enigma.crack("b6f2s7phvwjoae qzw8iz,ait")
-    expected = "this is a message ..end.."
+    actual = enigma.crack("v8kjq0cyqu8rt,qfzy8drylirs")
+    expected = "come get a massage ..end.."
 
     assert_equal expected, actual
   end
 
   def test_detects_correct_key
-    skip
+skip
     enigma = Enigma.new
     message = "v8kjq0cyqu8rt,qfzy8drylirs"
     date = "150518"
