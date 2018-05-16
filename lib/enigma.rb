@@ -43,8 +43,12 @@ class Enigma
 
   def encrypt(message, key = new_key, date = Date.today, switch = 1)
 
+    if date.class == Date
+      date = format_date(date)
+    end
+
     rotations = new_rotations(key)
-    offsets = new_offsets(format_date(date))
+    offsets = new_offsets(date)
     abcd_rotations = total_rotation(offsets, rotations)
     message_arr = message.chars
     encrypted_arr = []
@@ -68,6 +72,7 @@ class Enigma
   end
 
   def decrypt(encrypted, key, date = Date.today)
+
       encrypt(encrypted, key, date, -1)
   end
 
@@ -80,14 +85,21 @@ class Enigma
      new_char = @characters.rotate(@characters.index(assumed_4[idx]))
    end_rotations << - new_char.index(last_4[idx])
    end
+   shift_base_rotations(message, end_rotations)
+  end
+
+  def shift_base_rotations(message, end_rotations)
    left_over = message.length % 4
    base_rotations = end_rotations.rotate(4 - left_over)
- end
+  end
 
- def crack(message)
-  base_rotations = base_rotations(message)
+  def crack(message, date = Date.today)
+    if date.class == Date
+    date = format_date(date)
+  end
 
-  decrypted_message = encrypt(message, 0, base_rotations)
+  key = detect_key(message, date)
+  decrypted_message = decrypt(message, key, date)
   end
 
   def actual_rotations(base_rotations, offsets)
@@ -100,7 +112,7 @@ class Enigma
 
   def detect_key(message, date)
     base_rotations = base_rotations(message)
-    offsets = OffsetCalculator.new.get_offsets(date)
+    offsets = new_offsets(date)
     actual_rotations = actual_rotations(base_rotations, offsets)
 
     key_parts = []
