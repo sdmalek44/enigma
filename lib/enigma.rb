@@ -11,7 +11,7 @@ class Enigma
   end
 
   def new_offsets(date)
-    OffsetCalculator.new.get_offsets(format_date(date))
+    OffsetCalculator.new.get_offsets(date)
   end
 
   def format_date(date)
@@ -41,10 +41,10 @@ class Enigma
     @characters.zip(rotated_characters).to_h
   end
 
-  def encrypt(message, key = , date = Date.today, switch = 1)
+  def encrypt(message, key = new_key, date = Date.today, switch = 1)
 
-    rotations = new_rotations
-    offsets = new_offsets(date)
+    rotations = new_rotations(key)
+    offsets = new_offsets(format_date(date))
     abcd_rotations = total_rotation(offsets, rotations)
     message_arr = message.chars
     encrypted_arr = []
@@ -67,13 +67,8 @@ class Enigma
     encrypted_arr.join
   end
 
-  def decrypt(encrypted, key, date = get_date)
-    assigned_key = KeyGenerator.new(key)
-    rotations = assigned_key.get_rotations(assigned_key.key)
-
-    offsets = OffsetCalculator.new.get_offsets(date)
-
-    encrypt(encrypted, offsets, rotations, -1)
+  def decrypt(encrypted, key, date = Date.today)
+      encrypt(encrypted, key, date, -1)
   end
 
   def base_rotations(message)
