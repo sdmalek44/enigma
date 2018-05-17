@@ -70,9 +70,9 @@ class Enigma
     key_parts = []
     actual.each_with_index do |rot, idx|
       if idx.zero?
-        key_parts << rot.to_s.rjust(1, '0')
+        key_parts << rot.to_s.rjust(2, '0')
       else
-        key_parts << rot.to_s[-1]
+        key_parts << rot.to_s.rjust(2, '0')[-1]
       end
     end
     key_parts.join
