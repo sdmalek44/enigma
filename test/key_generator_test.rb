@@ -1,9 +1,7 @@
-require 'minitest/autorun'
-require 'minitest/pride'
 require './lib/key_generator'
+require './test/test_helper'
 
 class KeyGeneratorTest < Minitest::Test
-
   def test_it_exists
     keygen = KeyGenerator.new
 

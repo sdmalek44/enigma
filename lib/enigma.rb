@@ -3,11 +3,10 @@ require './lib/offset_calculator.rb'
 require 'date'
 
 class Enigma
-
   attr_reader :characters
 
   def initialize
-    @characters = (" ".."z").to_a
+    @characters = (' '..'z').to_a
   end
 
   def new_offsets(date)
@@ -15,11 +14,11 @@ class Enigma
   end
 
   def format_date(date)
-    date.strftime("%d%m%y")
+    date.strftime('%d%m%y')
   end
 
   def new_key
-    new_key = KeyGenerator.new.random_key
+    KeyGenerator.new.random_key
   end
 
   def new_rotations(key)
@@ -28,11 +27,10 @@ class Enigma
 
   def total_rotation(offsets, rotations)
     total_rotation = []
-    rotation_letters = ["A", "B", "C", "D"]
-    total_rotation << offsets[0] + rotations[0]
-    total_rotation << offsets[1] + rotations[1]
-    total_rotation << offsets[2] + rotations[2]
-    total_rotation << offsets[3] + rotations[3]
+    rotation_letters = %w[A B C D]
+    rotations.each_index do |index|
+      total_rotation << offsets[index] + rotations[index]
+    end
     Hash[rotation_letters.zip(total_rotation)]
   end
 
@@ -42,29 +40,26 @@ class Enigma
   end
 
   def encrypt(message, key = new_key, date = Date.today, switch = 1)
-
     if date.class == Date
       date = format_date(date)
     end
-
     rotations = new_rotations(key)
     offsets = new_offsets(date)
     abcd_rotations = total_rotation(offsets, rotations)
     message_arr = message.chars
     encrypted_arr = []
-
     message_arr.each_with_index do |char, index|
       if index % 4 == 0
-        cipher = new_cipher(abcd_rotations["A"]*switch)
+        cipher = new_cipher(abcd_rotations['A']*switch)
         encrypted_arr << cipher[char]
       elsif index % 4 == 1
-        cipher = new_cipher(abcd_rotations["B"]*switch)
+        cipher = new_cipher(abcd_rotations['B']*switch)
         encrypted_arr << cipher[char]
       elsif index % 4 == 2
-        cipher = new_cipher(abcd_rotations["C"]*switch)
+        cipher = new_cipher(abcd_rotations['C']*switch)
         encrypted_arr << cipher[char]
       elsif index % 4 == 3
-        cipher = new_cipher(abcd_rotations["D"]*switch)
+        cipher = new_cipher(abcd_rotations['D']*switch)
         encrypted_arr << cipher[char]
       end
     end
@@ -93,7 +88,7 @@ class Enigma
     key_parts = []
     actual_rotations.each_with_index do |rot, idx|
       if idx == 0
-        key_parts << rot.to_s.rjust(1, "0")
+        key_parts << rot.to_s.rjust(1, '0')
       else
         key_parts << rot.to_s[-1]
       end
@@ -103,7 +98,7 @@ class Enigma
 
   def base_rotations(message)
    last_4 = message[-4..-1].chars
-   assumed_4 = ["n","d",".","."]
+   assumed_4 = ['n','d','.','.']
    end_rotations = []
 
    last_4.each_index do |idx|
