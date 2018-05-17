@@ -8,17 +8,6 @@ class EnigmaTest < Minitest::Test
     assert_instance_of Enigma, enigma
   end
 
-  def test_it_returns_hash_of_rotations_plus_offsets
-    enigma = Enigma.new
-    offsets = [9, 2, 2, 4]
-    rotations = [41, 12, 23, 35]
-
-    actual = enigma.total_rotation(offsets, rotations)
-    expected = { 'A' => 50, 'B' => 14, 'C' => 25, 'D' => 39 }
-
-    assert_equal expected, actual
-  end
-
   def test_returns_characters
     enigma = Enigma.new
 
