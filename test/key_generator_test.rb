@@ -1,9 +1,7 @@
-require 'minitest/autorun'
-require 'minitest/pride'
 require './lib/key_generator'
+require './test/test_helper'
 
 class KeyGeneratorTest < Minitest::Test
-
   def test_it_exists
     keygen = KeyGenerator.new
 
@@ -28,9 +26,10 @@ class KeyGeneratorTest < Minitest::Test
 
   def test_finds_rotations_from_key
     keygen = KeyGenerator.new("12345")
+    key = keygen.key
 
     expected = [12, 23, 34, 45]
-    actual = keygen.get_rotations
+    actual = keygen.get_rotations(key)
 
     assert_equal expected, actual
   end

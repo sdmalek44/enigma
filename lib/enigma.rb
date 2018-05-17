@@ -1,13 +1,12 @@
-require './lib/key_generator.rb'
-require './lib/offset_calculator.rb'
+require './lib/key_generator'
+require './lib/offset_calculator'
 require 'date'
 
 class Enigma
-
   attr_reader :characters
 
   def initialize
-    @characters = (" ".."z").to_a
+    @characters = (' '..'z').to_a
   end
 
   def new_offsets(date)
@@ -15,11 +14,11 @@ class Enigma
   end
 
   def format_date(date)
-    date.strftime("%d%m%y")
+    date.strftime('%d%m%y')
   end
 
   def new_key
-    new_key = KeyGenerator.new.random_key
+    KeyGenerator.new.random_key
   end
 
   def new_rotations(key)
@@ -28,11 +27,10 @@ class Enigma
 
   def total_rotation(offsets, rotations)
     total_rotation = []
-    rotation_letters = ["A", "B", "C", "D"]
-    total_rotation << offsets[0] + rotations[0]
-    total_rotation << offsets[1] + rotations[1]
-    total_rotation << offsets[2] + rotations[2]
-    total_rotation << offsets[3] + rotations[3]
+    rotation_letters = %w[A B C D]
+    rotations.each_index do |index|
+      total_rotation << offsets[index] + rotations[index]
+    end
     Hash[rotation_letters.zip(total_rotation)]
   end
 
@@ -42,58 +40,37 @@ class Enigma
   end
 
   def encrypt(message, key = new_key, date = Date.today, switch = 1)
-
-    if date.class == Date
-      date = format_date(date)
-    end
-
-    rotations = new_rotations(key)
-    offsets = new_offsets(date)
-    abcd_rotations = total_rotation(offsets, rotations)
-    message_arr = message.chars
-    encrypted_arr = []
-
-    message_arr.each_with_index do |char, index|
-      if index % 4 == 0
-        cipher = new_cipher(abcd_rotations["A"]*switch)
-        encrypted_arr << cipher[char]
+    date = format_date(date) if date.class == Date
+    abcd = total_rotation(new_offsets(date), new_rotations(key))
+    message.chars.map.with_index do |char, index|
+      if (index % 4).zero?
+        new_cipher(abcd['A'] * switch)[char]
       elsif index % 4 == 1
-        cipher = new_cipher(abcd_rotations["B"]*switch)
-        encrypted_arr << cipher[char]
+        new_cipher(abcd['B'] * switch)[char]
       elsif index % 4 == 2
-        cipher = new_cipher(abcd_rotations["C"]*switch)
-        encrypted_arr << cipher[char]
+        new_cipher(abcd['C'] * switch)[char]
       elsif index % 4 == 3
-        cipher = new_cipher(abcd_rotations["D"]*switch)
-        encrypted_arr << cipher[char]
+        new_cipher(abcd['D'] * switch)[char]
       end
-    end
-    encrypted_arr.join
+    end.join
   end
 
   def decrypt(encrypted, key, date = Date.today)
-
-      encrypt(encrypted, key, date, -1)
+    encrypt(encrypted, key, date, -1)
   end
 
   def crack(message, date = Date.today)
-    if date.class == Date
-    date = format_date(date)
-   end
-
-  key = detect_key(message, date)
-  decrypted_message = decrypt(message, key, date)
+    date = format_date(date) if date.class == Date
+    key = detect_key(message, date)
+    decrypt(message, key, date)
   end
 
   def detect_key(message, date)
-    base_rotations = base_rotations(message)
-    offsets = new_offsets(date)
-    actual_rotations = actual_rotations(base_rotations, offsets)
-
+    actual = actual_rotations(base_rotations(message), new_offsets(date))
     key_parts = []
-    actual_rotations.each_with_index do |rot, idx|
-      if idx == 0
-        key_parts << rot.to_s.rjust(1, "0")
+    actual.each_with_index do |rot, idx|
+      if idx.zero?
+        key_parts << rot.to_s.rjust(1, '0')
       else
         key_parts << rot.to_s[-1]
       end
@@ -102,26 +79,26 @@ class Enigma
   end
 
   def base_rotations(message)
-   last_4 = message[-4..-1].chars
-   assumed_4 = ["n","d",".","."]
-   end_rotations = []
+    last_four = message[-4..-1].chars
+    assumed_four = %w[n d . .]
+    end_rotations = []
 
-   last_4.each_index do |idx|
-     new_char = @characters.rotate(@characters.index(assumed_4[idx]))
-   end_rotations << new_char.index(last_4[idx])
-   end
-   shift_base_rotations(message, end_rotations)
+    last_four.each_index do |idx|
+      new_char = @characters.rotate(@characters.index(assumed_four[idx]))
+      end_rotations << - new_char.index(last_four[idx])
+    end
+    shift_rotations(message, end_rotations)
   end
 
-  def shift_base_rotations(message, end_rotations)
-   left_over = message.length % 4
-   base_rotations = end_rotations.rotate(4 - left_over)
+  def shift_rotations(message, end_rotations)
+    left_over = message.length % 4
+    end_rotations.rotate(4 - left_over)
   end
 
   def actual_rotations(base_rotations, offsets)
     real_rotations = []
     base_rotations.each_with_index do |base, index|
-      real_rotations << base - offsets[index]
+      real_rotations << (base + offsets[index]).abs
     end
     real_rotations
   end
