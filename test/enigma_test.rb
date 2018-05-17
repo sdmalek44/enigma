@@ -14,7 +14,7 @@ class EnigmaTest < Minitest::Test
     rotations = [41, 12, 23, 35]
 
     actual = enigma.total_rotation(offsets, rotations)
-    expected = {'A' => 50, 'B' => 14, 'C' => 25, 'D' => 39}
+    expected = { 'A' => 50, 'B' => 14, 'C' => 25, 'D' => 39 }
 
     assert_equal expected, actual
   end
@@ -64,14 +64,14 @@ class EnigmaTest < Minitest::Test
     rotations = [41, 12, 23, 35]
 
     actual = enigma.total_rotation(offsets, rotations)
-    expected = {'A' => 50, 'B' => 14, 'C' => 25, 'D' => 39}
+    expected = { 'A' => 50, 'B' => 14, 'C' => 25, 'D' => 39 }
 
     assert_equal expected, actual
   end
 
   def test_new_cipher_rotates_by_correct_rotation
     enigma = Enigma.new
-    all_rotations = {'A' =>3, 'B' => 2, 'C' => 1, 'D' => 4}
+    all_rotations = { 'A' => 3, 'B' => 2, 'C' => 1, 'D' => 4 }
     cipher = enigma.new_cipher(all_rotations['A'])
 
     expected = 'd'
@@ -99,7 +99,6 @@ class EnigmaTest < Minitest::Test
 
     assert_equal expected, actual
   end
-
 
   def test_it_cracks
     enigma = Enigma.new
@@ -143,7 +142,7 @@ class EnigmaTest < Minitest::Test
     base_rotations = [-10, -10, -10, -10]
     offsets = [1, 2, 3, 4]
 
-    expected = [9, 8 , 7, 6]
+    expected = [9, 8, 7, 6]
     actual = enigma.actual_rotations(base_rotations, offsets)
 
     assert_equal expected, actual
